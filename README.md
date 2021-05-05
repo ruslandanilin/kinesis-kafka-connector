@@ -1,5 +1,3 @@
-Not sure, but this connector might not work with Avro
-
 ### Introduction
 
 The Kafka-Kinesis-Connector is a connector to be used with [Kafka Connect](https://kafka.apache.org/documentation/#connect) to publish messages from Kafka to [Amazon Kinesis Streams](https://aws.amazon.com/kinesis/streams/) or [Amazon Kinesis Firehose](https://aws.amazon.com/kinesis/firehose/).
@@ -8,7 +6,7 @@ Kafka-Kinesis-Connector for Firehose is used to publish messages from Kafka to o
 
 Kafka-Kinesis-Connector for Kinesis is used to publish messages from Kafka to Amazon Kinesis Streams.
 
-Kafka-Kinesis-Connector can be executed on on-premise nodes or EC2 machines. It can be executed in standalone mode as well as [distributed mode](https://kafka.apache.org/documentation/#connect). 
+Kafka-Kinesis-Connector can be executed on on-premise nodes or EC2 machines. It can be executed in standalone mode as well as [distributed mode](https://kafka.apache.org/documentation/#connect).
 
 ### Building
 
@@ -18,9 +16,7 @@ You can build the project by running "maven package" and it will build amazon-ki
 
 1.  Make sure you create a delivery stream in AWS Console/CLI/SDK – See more details [here](http://docs.aws.amazon.com/firehose/latest/dev/basic-create.html) and configure destination.
 
-2.  If you don't specify aws user key nor aws secret key then connector will use [DefaultAWSCredentialsProviderChain](http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) for authenitication. It looks for credentials in following order - environment variable, java system properties, credentials profile file at default location ( (~/.aws/credentials), credentials delievered through Amazon EC2 container service, and instance profile credentails delivered through Amazon EC2 metadata service. Make sure user has at least permission to list streams/delivery stream, describe streams/delivery stream and put records for stream/delivery stream.
-
-3. If you don't specify Kinesis host or CloudWatch host, the original one will be used.
+2.  Connector uses [DefaultAWSCredentialsProviderChain](http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) for authenitication. It looks for credentials in following order - environment variable, java system properties, credentials profile file at default location ( (~/.aws/credentials), credentials delievered through Amazon EC2 container service, and instance profile credentails delivered through Amazon EC2 metadata service. Make sure user has at least permission to list streams/delivery stream, describe streams/delivery stream and put records for stream/delivery stream.
 
 ### Running a Connector
 
@@ -43,13 +39,11 @@ You can build the project by running "maven package" and it will build amazon-ki
 | connector.class      | Class for Amazon Kinesis Firehose Connector      |   com.amazon.kinesis.kafka.FirehoseSinkConnector |
 | topics | Kafka topics from where you want to consume messages. It can be single topic or comma separated list of topics      |   -  |
 | region| Specify region of your Kinesis Firehose | - |
-| awsKey | AWS user key.| - |
-| awsSecret | AWS user secret key.| - |
-| awsKinesisHost | AWS Kinesis host. (optional, must go with awsKinesisPort)| localhost |
-| awsKinesisPort | AWS Kinesis port. (optional, must go with awsKinesisHost)| 7700 |
-| awsCloudWatchHost | AWS CloudWatch host. (optional, must go with awsCloudWatchPort)| localhost |
-| awsCloudWatchPort | AWS CloudWatch port. (optional, must go with awsCloudWatchHost)| 7701 |
-| awsValidateCertificate | Should certificate be validated| true |
+| kinesisEndpoint| Alternate Kinesis endpoint, such as for a NAT gateway (optional) | - |
+| roleARN | IAM Role ARN to assume (optional)| - |
+| roleSessionName | IAM Role session-name to be logged (optional)| - |
+| roleExternalID | IAM Role external-id (optional)| - |
+| roleDurationSeconds | Duration of STS assumeRole session (optional)| - |
 | batch | Connector batches messages before sending to Kinesis Firehose (true/false) | true |
 | batchSize | Number of messages to be batched together. Firehose accepts at max 500 messages in one batch. | 500 |
 | batchSizeInBytes | Message size in bytes when batched together. Firehose accepts at max 4MB in one batch. | 3670016 |
@@ -60,9 +54,7 @@ You can build the project by running "maven package" and it will build amazon-ki
 
 1.  Make sure you create Kinesis stream in AWS Console/CLI/SDK – See more details [here](http://docs.aws.amazon.com/streams/latest/dev/learning-kinesis-module-one-create-stream.html).
 
-2.  If you don't specify aws user key nor aws secret key then connector will use [DefaultAWSCredentialsProviderChain](http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) for authenitication. It looks for credentials in following order - environment variable, java system properties, credentials profile file at default location ( (~/.aws/credentials), credentials delievered through Amazon EC2 container service, and instance profile credentails delivered through Amazon EC2 metadata service. Make sure user has at least permission to list streams/delivery stream, describe streams/delivery stream and put records for stream/delivery stream.
-
-3. If you don't specify Kinesis host or CloudWatch host, the original one will be used.
+2.  Connector uses [DefaultAWSCredentialsProviderChain](http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) for authenitication. It looks for credentials in following order - environment variable, java system properties, credentials profile file at default location ( (~/.aws/credentials), credentials delievered through Amazon EC2 container service, and instance profile credentails delivered through Amazon EC2 metadata service. Make sure user has at least permission to list streams/delivery stream, describe streams/delivery stream and put records for stream/delivery stream.
 
 ### Running a Connector
 
@@ -85,14 +77,12 @@ You can build the project by running "maven package" and it will build amazon-ki
 | connector.class      | Class for Amazon Kinesis Stream Connector      |   com.amazon.kinesis.kafka.AmazonKinesisSinkConnector |
 | topics | Kafka topics from where you want to consume messages. It can be single topic or comma separated list of topics      |   -  |
 | region| Specify region of your Kinesis Firehose | - |
+| kinesisEndpoint| Alternate Kinesis endpoint, such as for a NAT gateway (optional) | - |
 | streamName | Kinesis Stream Name.| - |
-| awsKey | AWS user key.| - |
-| awsSecret | AWS user secret key.| - |
-| awsKinesisHost | AWS Kinesis host. (optional, must go with awsKinesisPort)| localhost |
-| awsKinesisPort | AWS Kinesis port. (optional, must go with awsKinesisHost)| 7700 |
-| awsCloudWatchHost | AWS CloudWatch host. (optional, must go with awsCloudWatchPort)| localhost |
-| awsCloudWatchPort | AWS CloudWatch port. (optional, must go with awsCloudWatchHost)| 7701 |
-| awsValidateCertificate | Should certificate be validated| true |
+| roleARN | IAM Role ARN to assume (optional)| - |
+| roleSessionName | IAM Role session-name to be logged (optional)| - |
+| roleExternalID | IAM Role external-id (optional)| - |
+| roleDurationSeconds | Duration of STS assumeRole session (optional)| - |
 | usePartitionAsHashKey | Using Kafka partition key as hash key for Kinesis streams.  | false |
 | maxBufferedTime | Maximum amount of time (milliseconds) a record may spend being buffered before it gets sent. Records may be sent sooner than this depending on the other buffering limits. Range: [100..... 9223372036854775807] | 15000 |
 | maxConnections | Maximum number of connections to open to the backend. HTTP requests are sent in parallel over multiple connections. Range: [1...256]. | 24 |
@@ -102,3 +92,4 @@ You can build the project by running "maven package" and it will build amazon-ki
 | metricsGranuality | Controls the granularity of metrics that are uploaded to CloudWatch. Greater granularity produces more metrics. Expected pattern: global/stream/shard. |  global |
 | metricsNameSpace | The namespace to upload metrics under. | KinesisProducer |
 | aggregration | With aggregation, multiple user records are packed into a single KinesisRecord. If disabled, each user record is sent in its own KinesisRecord.| true
+| schemaEnable | Allows to send JSON objects | false
