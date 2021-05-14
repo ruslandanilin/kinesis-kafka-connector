@@ -128,6 +128,11 @@ public class AmazonKinesisSinkTask extends SinkTask {
 
 		String partitionKey;
 		for (SinkRecord sinkRecord : sinkRecords) {
+			if (sinkRecord.value() == null) {
+				System.out.println("Found record with NULL value. Skipping it.");
+				continue;
+				//throw new DataException("Found record with NULL value");
+			}
 
 			ListenableFuture<UserRecordResult> f;
 			// Kinesis does not allow empty partition key
